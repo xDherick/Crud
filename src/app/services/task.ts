@@ -33,7 +33,10 @@ export class TaskService {
   }
 
   fetchTasks(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(tap((tasks) => this.tasksSubject.next(tasks)));
+    const cacheBuster = `?v=${new Date().getTime()}`;
+    return this.http
+      .get<any[]>(this.apiUrl + cacheBuster)
+      .pipe(tap((tasks) => this.tasksSubject.next(tasks)));
   }
 
   toggleFormVisibility(): void {
