@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-const API_BASE_URL = 'back-crud-8t75.onrender.com';
+const API_BASE_URL = 'https://back-crud-8t75.onrender.com';
 
 @Injectable({
   providedIn: 'root',
