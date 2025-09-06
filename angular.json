@@ -27,8 +27,13 @@
               }
             ],
             "styles": [
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
+
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
+
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
@@ -60,7 +65,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "meu-crud-frontend:build:production"
@@ -85,12 +90,13 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "styles": ["src/styles.scss"]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "61f6dc4e-2548-4e9b-b899-d84fc7d4357a"
   }
 }

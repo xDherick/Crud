@@ -1,0 +1,56 @@
+<div *ngIf="!(showAddTask$ | async)">
+  <h2>Lista de Tarefas</h2>
+  <div class="accordion" id="tasksAccordion">
+    <div
+      *ngFor="let task of tasks$ | async; let i = index"
+      class="accordion-item"
+      [ngClass]="getTaskClass(task.status)"
+    >
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#collapse' + i"
+        >
+          {{ task.nome }}
+        </button>
+      </h2>
+      <div
+        [id]="'collapse' + i"
+        class="accordion-collapse collapse"
+        data-bs-parent="#tasksAccordion"
+      >
+        <div class="accordion-body">
+          <strong>Início:</strong> {{ task.inicio | date : 'dd/MM/yyyy' }} <br />
+          <strong>Conclusão:</strong> {{ task.conclusao | date : 'dd/MM/yyyy' }} <br />
+          <strong>Custo Estimado:</strong> {{ task.custo_estimado | currency : 'BRL' }} <br />
+          <strong>Status:</strong>
+          <span class="badge rounded-pill text-bg-primary">{{ task.status }}</span>
+          <hr />
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-warning btn-sm me-2" (click)="onEdit(task)">
+              <i class="fas fa-pencil-alt"></i> Editar
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="deleteTask(task)">
+              <i class="fas fa-trash-alt"></i> Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showAddTask$ | async">
+  <app-task-form
+    [taskToEdit]="taskToEdit"
+    (taskSubmit)="handleTaskSubmit($event)"
+    (cancel)="handleCancel()"
+  >
+  </app-task-form>
+</div>
+
+<hr class="mt-5" />
+<h3>Dados Brutos da API:</h3>
+<pre>{{ tasks$ | async | json }}</pre>
