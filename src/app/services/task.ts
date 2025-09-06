@@ -1,15 +1,15 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { createConsumer } from '@rails/actioncable';
+
+const API_BASE_URL = 'back-crud-8t75.onrender.com';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = 'https://back-crud-8t75.onrender.com/tasks';
+  private apiUrl = `${API_BASE_URL}/tasks`;
 
   private tasksSubject = new BehaviorSubject<any[]>([]);
   tasks$ = this.tasksSubject.asObservable();
@@ -17,20 +17,7 @@ export class TaskService {
   private showFormSubject = new BehaviorSubject<boolean>(false);
   showForm$ = this.showFormSubject.asObservable();
 
-  private platformId = inject(PLATFORM_ID);
-
-  constructor(private http: HttpClient) {
-    if (isPlatformBrowser(this.platformId)) {
-      createConsumer('wss://back-crud-8t75.onrender.com/cable').subscriptions.create(
-        'TasksChannel',
-        {
-          received: (taskData: any) => {
-            this.updateTasksState(taskData);
-          },
-        }
-      );
-    }
-  }
+  constructor(private http: HttpClient) {}
 
   fetchTasks(): Observable<any[]> {
     const cacheBuster = `?v=${new Date().getTime()}`;
@@ -65,35 +52,5 @@ export class TaskService {
   deleteComment(taskId: number, commentId: number): Observable<any> {
     const url = `${this.apiUrl}/${taskId}/comments/${commentId}`;
     return this.http.delete(url);
-  }
-
-  addLocalTask(newTask: any) {
-    const currentTasks = this.tasksSubject.getValue();
-    this.tasksSubject.next([...currentTasks, newTask]);
-  }
-
-  updateLocalTask(updatedTask: any) {
-    const currentTasks = this.tasksSubject.getValue();
-    const index = currentTasks.findIndex((t) => t.id === updatedTask.id);
-    if (index > -1) {
-      currentTasks[index] = updatedTask;
-      this.tasksSubject.next([...currentTasks]);
-    }
-  }
-
-  private updateTasksState(taskData: any) {
-    let currentTasks = this.tasksSubject.getValue();
-
-    if (taskData.deleted) {
-      this.tasksSubject.next(currentTasks.filter((t) => t.id !== taskData.id));
-    } else {
-      const index = currentTasks.findIndex((t) => t.id === taskData.id);
-      if (index > -1) {
-        currentTasks[index] = taskData;
-        this.tasksSubject.next([...currentTasks]);
-      } else {
-        this.tasksSubject.next([taskData, ...currentTasks]);
-      }
-    }
   }
 }

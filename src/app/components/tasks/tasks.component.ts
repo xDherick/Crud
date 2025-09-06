@@ -27,17 +27,12 @@ export class TasksComponent implements OnInit {
   }
 
   handleTaskSubmit(task: any) {
-    if (task.id) {
-      this.taskService.updateTask(task).subscribe((updatedTask) => {
-        this.taskService.updateLocalTask(updatedTask);
-        this.closeForm();
-      });
-    } else {
-      this.taskService.addTask(task).subscribe((newTask) => {
-        this.taskService.addLocalTask(newTask);
-        this.closeForm();
-      });
-    }
+    const request = task.id ? this.taskService.updateTask(task) : this.taskService.addTask(task);
+
+    request.subscribe(() => {
+      this.taskService.fetchTasks().subscribe();
+      this.closeForm();
+    });
   }
 
   handleCancel() {
@@ -80,7 +75,7 @@ export class TasksComponent implements OnInit {
       return;
     }
     const commentData = { author: form.value.author || 'Anônimo', content: form.value.content };
-    this.taskService.addComment(taskId, commentData).subscribe((newComment) => {
+    this.taskService.addComment(taskId, commentData).subscribe(() => {
       this.taskService.fetchTasks().subscribe();
       form.resetForm({ author: 'Anônimo' });
     });
@@ -88,7 +83,9 @@ export class TasksComponent implements OnInit {
 
   onDeleteComment(taskId: number, commentId: number) {
     if (confirm('Tem certeza que deseja excluir este comentário?')) {
-      this.taskService.deleteComment(taskId, commentId).subscribe();
+      this.taskService.deleteComment(taskId, commentId).subscribe(() => {
+        this.taskService.fetchTasks().subscribe();
+      });
     }
   }
 }
