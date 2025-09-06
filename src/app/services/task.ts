@@ -9,7 +9,7 @@ import { createConsumer } from '@rails/actioncable';
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = 'https://studious-space-rotary-phone-5gwggv7p6grf4r6j-3000.app.github.dev/tasks';
+  private apiUrl = 'https://back-crud-8t75.onrender.com/tasks';
 
   private tasksSubject = new BehaviorSubject<any[]>([]);
   tasks$ = this.tasksSubject.asObservable();
@@ -21,13 +21,14 @@ export class TaskService {
 
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
-      createConsumer(
-        'ws://studious-space-rotary-phone-5gwggv7p6grf4r6j-3000.app.github.dev/cable'
-      ).subscriptions.create('TasksChannel', {
-        received: (taskData: any) => {
-          this.updateTasksState(taskData);
-        },
-      });
+      createConsumer('ws://back-crud-8t75.onrender.com/cable').subscriptions.create(
+        'TasksChannel',
+        {
+          received: (taskData: any) => {
+            this.updateTasksState(taskData);
+          },
+        }
+      );
     }
   }
 
