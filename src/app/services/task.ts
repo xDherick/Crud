@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,16 +17,18 @@ export class TaskService {
   private showFormSubject = new BehaviorSubject<boolean>(false);
   showForm$ = this.showFormSubject.asObservable();
 
+  private platformId = inject(PLATFORM_ID);
+
   constructor(private http: HttpClient) {
-    createConsumer('ws://localhost:3000/cable').subscriptions.create('TasksChannel', {
-      // A CORREÇÃO ESTÁ AQUI
-      received: (taskData: any) => {
-        this.updateTasksState(taskData);
-      },
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      createConsumer('ws://localhost:3000/cable').subscriptions.create('TasksChannel', {
+        received: (taskData: any) => {
+          this.updateTasksState(taskData);
+        },
+      });
+    }
   }
 
-  // O resto do arquivo continua igual...
   fetchTasks(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(tap((tasks) => this.tasksSubject.next(tasks)));
   }
@@ -35,12 +38,12 @@ export class TaskService {
   }
 
   addTask(task: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, task);
+    return this.http.post<any>(this.apiUrl, { task });
   }
 
   updateTask(task: any): Observable<any> {
     const url = `${this.apiUrl}/${task.id}`;
-    return this.http.put(url, task);
+    return this.http.put(url, { task });
   }
 
   deleteTask(id: number): Observable<any> {
@@ -48,16 +51,24 @@ export class TaskService {
     return this.http.delete(url);
   }
 
-  private updateTasksState(task: any) {
-    const currentTasks = this.tasksSubject.getValue();
-    const index = currentTasks.findIndex((t) => t.id === task.id);
-    let updatedTasks = [...currentTasks];
+  addComment(taskId: number, comment: { author: string; content: string }): Observable<any> {
+    const url = `${this.apiUrl}/${taskId}/comments`;
+    return this.http.post(url, { comment });
+  }
 
-    if (index > -1) {
-      updatedTasks[index] = task;
+  private updateTasksState(taskData: any) {
+    let currentTasks = this.tasksSubject.getValue();
+
+    if (taskData.deleted) {
+      this.tasksSubject.next(currentTasks.filter((t) => t.id !== taskData.id));
     } else {
-      updatedTasks.push(task);
+      const index = currentTasks.findIndex((t) => t.id === taskData.id);
+      if (index > -1) {
+        currentTasks[index] = taskData;
+        this.tasksSubject.next([...currentTasks]);
+      } else {
+        this.tasksSubject.next([taskData, ...currentTasks]);
+      }
     }
-    this.tasksSubject.next(updatedTasks);
   }
 }

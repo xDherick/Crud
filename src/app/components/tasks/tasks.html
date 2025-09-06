@@ -1,5 +1,8 @@
-<div *ngIf="!(showAddTask$ | async)">
-  <h2>Lista de Tarefas</h2>
+<div *ngIf="!(showAddTask$ | async); else formView">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Lista de Tarefas</h2>
+  </div>
+
   <div class="accordion" id="tasksAccordion">
     <div
       *ngFor="let task of tasks$ | async; let i = index"
@@ -36,21 +39,54 @@
               <i class="fas fa-trash-alt"></i> Excluir
             </button>
           </div>
+
+          <hr />
+          <h5>Comentários</h5>
+          <div *ngIf="!task.comments || task.comments.length === 0" class="text-muted small mb-3">
+            Nenhum comentário ainda.
+          </div>
+          <div *ngFor="let comment of task.comments" class="mb-2">
+            <strong>{{ comment.author }}:</strong>
+            <p class="mb-0 ms-2" style="white-space: pre-wrap">{{ comment.content }}</p>
+          </div>
+
+          <form #commentForm="ngForm" (ngSubmit)="onAddComment(commentForm, task.id)" class="mt-3">
+            <div class="mb-2">
+              <input
+                type="text"
+                name="author"
+                placeholder="Seu nome"
+                class="form-control form-control-sm"
+                ngModel
+                #author="ngModel"
+                value="Anônimo"
+              />
+            </div>
+            <div class="mb-2">
+              <textarea
+                name="content"
+                placeholder="Escreva um comentário..."
+                class="form-control form-control-sm"
+                required
+                ngModel
+                #content="ngModel"
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary btn-sm" [disabled]="commentForm.invalid">
+              Comentar
+            </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="showAddTask$ | async">
+<ng-template #formView>
   <app-task-form
     [taskToEdit]="taskToEdit"
     (taskSubmit)="handleTaskSubmit($event)"
     (cancel)="handleCancel()"
   >
   </app-task-form>
-</div>
-
-<hr class="mt-5" />
-<h3>Dados Brutos da API:</h3>
-<pre>{{ tasks$ | async | json }}</pre>
+</ng-template>

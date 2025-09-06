@@ -17,7 +17,12 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": {
+              "base": "dist/meu-crud-frontend"
+            },
+            "index": "src/index.html",
             "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -31,11 +36,9 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
-
             "server": "src/main.server.ts",
-            "outputMode": "server",
+            "prerender": true,
             "ssr": {
               "entry": "src/server.ts"
             }
@@ -97,6 +100,6 @@
     }
   },
   "cli": {
-    "analytics": "61f6dc4e-2548-4e9b-b899-d84fc7d4357a"
+    "analytics": "e6b10ce2-bd85-4f9e-98e0-f3c2d9124aa8"
   }
 }

@@ -3,11 +3,12 @@ import { TaskService } from '../../services/task';
 import { CommonModule } from '@angular/common';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [CommonModule, TaskFormComponent],
+  imports: [CommonModule, TaskFormComponent, FormsModule],
   templateUrl: './tasks.html',
   styleUrl: './tasks.scss',
 })
@@ -27,14 +28,14 @@ export class TasksComponent implements OnInit {
 
   handleTaskSubmit(task: any) {
     const request = task.id ? this.taskService.updateTask(task) : this.taskService.addTask(task);
+
     request.subscribe(() => {
-      this.taskService.toggleFormVisibility();
+      this.closeForm();
     });
   }
 
   handleCancel() {
-    this.taskService.toggleFormVisibility();
-    this.taskToEdit = null;
+    this.closeForm();
   }
 
   onEdit(task: any) {
@@ -48,6 +49,11 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  closeForm() {
+    this.taskToEdit = null;
+    this.taskService.toggleFormVisibility();
+  }
+
   getTaskClass(status: string): string {
     switch (status) {
       case 'Concluído':
@@ -59,5 +65,15 @@ export class TasksComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  onAddComment(form: any, taskId: number) {
+    if (form.invalid) {
+      return;
+    }
+    const commentData = { author: form.value.author || 'Anônimo', content: form.value.content };
+    this.taskService.addComment(taskId, commentData).subscribe(() => {
+      form.resetForm({ author: 'Anônimo' });
+    });
   }
 }
