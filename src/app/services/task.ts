@@ -9,7 +9,7 @@ import { createConsumer } from '@rails/actioncable';
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = 'http://localhost:3000/tasks';
+  private apiUrl = 'https://studious-space-rotary-phone-5gwggv7p6grf4r6j-3000.app.github.dev/tasks';
 
   private tasksSubject = new BehaviorSubject<any[]>([]);
   tasks$ = this.tasksSubject.asObservable();
@@ -21,7 +21,9 @@ export class TaskService {
 
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
-      createConsumer('ws://localhost:3000/cable').subscriptions.create('TasksChannel', {
+      createConsumer(
+        'ws://studious-space-rotary-phone-5gwggv7p6grf4r6j-3000.app.github.dev/cable'
+      ).subscriptions.create('TasksChannel', {
         received: (taskData: any) => {
           this.updateTasksState(taskData);
         },
