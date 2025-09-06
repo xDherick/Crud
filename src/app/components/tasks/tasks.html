@@ -3,6 +3,13 @@
     <h2 class="mb-0">Lista de Tarefas</h2>
   </div>
 
+  <div class="d-flex justify-content-end align-items-center small mb-3">
+    <span class="me-2">Legenda:</span>
+    <span class="badge rounded-pill text-bg-warning me-2">Pendente</span>
+    <span class="badge rounded-pill text-bg-info me-2">Em andamento</span>
+    <span class="badge rounded-pill text-bg-success">Concluído</span>
+  </div>
+
   <div class="accordion" id="tasksAccordion">
     <div
       *ngFor="let task of tasks$ | async; let i = index"
@@ -45,9 +52,20 @@
           <div *ngIf="!task.comments || task.comments.length === 0" class="text-muted small mb-3">
             Nenhum comentário ainda.
           </div>
-          <div *ngFor="let comment of task.comments" class="mb-2">
-            <strong>{{ comment.author }}:</strong>
-            <p class="mb-0 ms-2" style="white-space: pre-wrap">{{ comment.content }}</p>
+          <div
+            *ngFor="let comment of task.comments"
+            class="mb-2 d-flex justify-content-between align-items-start"
+          >
+            <div>
+              <strong>{{ comment.author }}:</strong>
+              <p class="mb-0 ms-2" style="white-space: pre-wrap">{{ comment.content }}</p>
+            </div>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              (click)="onDeleteComment(task.id, comment.id)"
+            >
+              &times;
+            </button>
           </div>
 
           <form #commentForm="ngForm" (ngSubmit)="onAddComment(commentForm, task.id)" class="mt-3">

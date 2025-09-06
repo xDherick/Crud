@@ -59,6 +59,11 @@ export class TaskService {
     return this.http.post(url, { comment });
   }
 
+  deleteComment(taskId: number, commentId: number): Observable<any> {
+    const url = `${this.apiUrl}/${taskId}/comments/${commentId}`;
+    return this.http.delete(url);
+  }
+
   private updateTasksState(taskData: any) {
     let currentTasks = this.tasksSubject.getValue();
 

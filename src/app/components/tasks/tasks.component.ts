@@ -30,7 +30,7 @@ export class TasksComponent implements OnInit {
     const request = task.id ? this.taskService.updateTask(task) : this.taskService.addTask(task);
 
     request.subscribe(() => {
-      this.closeForm();
+      location.reload();
     });
   }
 
@@ -75,7 +75,13 @@ export class TasksComponent implements OnInit {
     }
     const commentData = { author: form.value.author || 'Anônimo', content: form.value.content };
     this.taskService.addComment(taskId, commentData).subscribe(() => {
-      form.resetForm({ author: 'Anônimo' });
+      location.reload();
     });
+  }
+
+  onDeleteComment(taskId: number, commentId: number) {
+    if (confirm('Tem certeza que deseja excluir este comentário?')) {
+      this.taskService.deleteComment(taskId, commentId).subscribe();
+    }
   }
 }
