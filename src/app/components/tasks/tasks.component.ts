@@ -30,7 +30,8 @@ export class TasksComponent implements OnInit {
     const request = task.id ? this.taskService.updateTask(task) : this.taskService.addTask(task);
 
     request.subscribe(() => {
-      location.reload();
+      this.taskService.fetchTasks().subscribe();
+      this.closeForm();
     });
   }
 
@@ -75,7 +76,8 @@ export class TasksComponent implements OnInit {
     }
     const commentData = { author: form.value.author || 'Anônimo', content: form.value.content };
     this.taskService.addComment(taskId, commentData).subscribe(() => {
-      location.reload();
+      this.taskService.fetchTasks().subscribe();
+      form.resetForm({ author: 'Anônimo' });
     });
   }
 
