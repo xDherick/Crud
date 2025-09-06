@@ -1,59 +1,52 @@
-# MeuCrudFrontend
+# Gerenciador de Tarefas (Front-end)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+Esta é a interface de usuário (UI) para o projeto CRUD de gerenciamento de tarefas. Construída com Angular, esta aplicação consome a API Rails, permitindo ao usuário interagir com os dados de forma visual e intuitiva.
 
-## Development server
+O site foi publicado e está online na Vercel.
 
-To start a local development server, run:
+https://meu-condominio-xdhericks-projects.vercel.app
 
-```bash
-ng serve
-```
+## ✨ Funcionalidades
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **CRUD Completo:** Interface para Criar, Ler, Atualizar e Deletar tarefas e comentários.
+- **Listagem Interativa:** Tarefas exibidas em um layout de acordeão, que expande para mostrar detalhes.
+- **Componentização:** A aplicação é dividida em componentes reutilizáveis (Header, Lista de Tarefas, Formulário).
+- **Gerenciamento de Estado:** Utiliza Services e RxJS para gerenciar o estado da aplicação e a comunicação entre componentes.
+- **Estilização Profissional:** Interface estilizada com Bootstrap, SCSS e Font Awesome, incluindo uma legenda de cores para o status das tarefas.
+- **Atualização da UI:** A interface é atualizada automaticamente após cada ação (criar, editar, deletar) sem a necessidade de recarregar a página.
 
-## Code scaffolding
+## 🛠️ Tecnologias Utilizadas
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Angular 18+:** Framework principal do front-end.
+- **TypeScript:** Linguagem base para o desenvolvimento em Angular.
+- **SCSS:** Pré-processador de CSS para estilos avançados.
+- **Bootstrap & Font Awesome:** Para estilização e ícones.
+- **RxJS:** Para programação reativa e gerenciamento de estado.
+- **@rails/actioncable:** Cliente para a comunicação em tempo real com o back-end.
 
-```bash
-ng generate component component-name
-```
+## 🚀 Como Rodar Localmente
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+1.  **Clone o repositório:**
 
-```bash
-ng generate --help
-```
+    ```bash
+    git clone [https://github.com/xDherick/Crud.git](https://github.com/xDherick/Crud.git)
+    cd Crud
+    ```
 
-## Building
+2.  **Instale as dependências:**
 
-To build the project run:
+    ```bash
+    npm install
+    ```
 
-```bash
-ng build
-```
+3.  **Configure a API:**
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+    - Abra o arquivo `src/app/services/task.ts`.
+    - Altere a constante `API_BASE_URL` para apontar para o seu servidor back-end local (`http://localhost:3000`).
 
-## Running unit tests
+4.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    ng serve
+    ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+A aplicação estará disponível em `http://localhost:4200`.
