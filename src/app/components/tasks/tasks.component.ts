@@ -45,7 +45,9 @@ export class TasksComponent implements OnInit {
 
   deleteTask(task: any) {
     if (confirm(`Tem certeza que deseja excluir a tarefa "${task.nome}"?`)) {
-      this.taskService.deleteTask(task.id).subscribe();
+      this.taskService.deleteTask(task.id).subscribe(() => {
+        this.taskService.fetchTasks().subscribe();
+      });
     }
   }
 
