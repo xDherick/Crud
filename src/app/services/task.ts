@@ -67,6 +67,20 @@ export class TaskService {
     return this.http.delete(url);
   }
 
+  addLocalTask(newTask: any) {
+    const currentTasks = this.tasksSubject.getValue();
+    this.tasksSubject.next([...currentTasks, newTask]);
+  }
+
+  updateLocalTask(updatedTask: any) {
+    const currentTasks = this.tasksSubject.getValue();
+    const index = currentTasks.findIndex((t) => t.id === updatedTask.id);
+    if (index > -1) {
+      currentTasks[index] = updatedTask;
+      this.tasksSubject.next([...currentTasks]);
+    }
+  }
+
   private updateTasksState(taskData: any) {
     let currentTasks = this.tasksSubject.getValue();
 
