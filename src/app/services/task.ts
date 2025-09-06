@@ -21,7 +21,7 @@ export class TaskService {
 
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
-      createConsumer('ws://back-crud-8t75.onrender.com/cable').subscriptions.create(
+      createConsumer('wss://back-crud-8t75.onrender.com/cable').subscriptions.create(
         'TasksChannel',
         {
           received: (taskData: any) => {
